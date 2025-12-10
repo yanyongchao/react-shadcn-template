@@ -4,5 +4,4 @@ export * from "./debounce-throttle";
 export * from "./is";
 export * from "./object";
 export * from "./string";
-export * from "./getPageTitle";
 export * from "./useRequest";

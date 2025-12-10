@@ -1,5 +1,5 @@
 import { type RouteObject } from "react-router-dom";
-import { ROUTE_PATHS } from "@/constants/common";
+import { ROUTE_PATHS } from "../config";
 
 export const dashboardRoute: RouteObject = {
   path: ROUTE_PATHS.dashboard,

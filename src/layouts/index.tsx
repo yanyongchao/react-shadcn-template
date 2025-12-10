@@ -1,29 +1,31 @@
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useMatches } from "react-router-dom";
 import { Sidebar } from "./components/sidebar";
 import { Header } from "./components/header";
 import { useSettingsStore } from "@/stores/modules/settings";
 import { Outlet } from "react-router-dom";
-import type { MenuKey } from "@/router/config";
 
 export default function DashboardPage() {
   const { collapsed } = useSettingsStore();
   const location = useLocation();
-  const activeKey = location.pathname as MenuKey;
+  const matches = useMatches();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // 获取当前页面的 title
+  const currentTitle = (matches[matches.length - 1] as any)?.handle?.title;
 
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar
         collapsed={collapsed}
-        activeKey={activeKey}
+        activePath={location.pathname}
         onMenuClick={() => {}}
         mobileOpen={mobileMenuOpen}
         onMobileClose={() => setMobileMenuOpen(false)}
       />
       <div className="flex flex-1 flex-col overflow-hidden">
         <Header
-          title={"xxx"}
+          title={currentTitle}
           onMobileMenuOpen={() => setMobileMenuOpen(true)}
         />
         <main className="flex-1 overflow-y-auto bg-muted/30 p-6">

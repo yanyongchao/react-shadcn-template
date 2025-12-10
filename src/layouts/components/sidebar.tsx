@@ -2,7 +2,7 @@ import type React from "react";
 
 import { useState, useCallback, useEffect } from "react";
 import { LogOut, ChevronDown, ChevronRight, Box } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -33,7 +33,7 @@ interface MenuItem {
 
 interface SidebarProps {
   collapsed: boolean;
-  activeKey: MenuKey;
+  activePath: string;
   onMenuClick: (key: MenuKey) => void;
   mobileOpen?: boolean;
   onMobileClose?: () => void;
@@ -319,14 +319,39 @@ function MenuItemComponent({
 
 export function Sidebar({
   collapsed,
-  activeKey,
+  activePath,
   onMenuClick,
   mobileOpen,
   onMobileClose,
 }: SidebarProps) {
   const navigate = useNavigate();
-  const location = useLocation();
   const [openKeys, setOpenKeys] = useState<Set<string>>(new Set());
+
+  // 计算当前激活的菜单项 - 支持动态路由匹配
+  const getActiveKey = (pathname: string): MenuKey | null => {
+    // 首先尝试精确匹配
+    const exactMatch = MEMU_CONFIG
+      .flatMap(section => section.items)
+      .find(item => item.key === pathname);
+
+    if (exactMatch) {
+      return exactMatch.key;
+    }
+
+    // 如果没有精确匹配，尝试前缀匹配（用于动态路由）
+    // 例如：/dashboard/123 应该匹配 /dashboard
+    const prefixMatch = MEMU_CONFIG
+      .flatMap(section => section.items)
+      .find(item => {
+        // 检查 pathname 是否以 menu item 的 key 开头
+        // 但要确保不是部分匹配，例如 /dashboard-extra 不应匹配 /dashboard
+        return pathname.startsWith(item.key + "/") || pathname === item.key;
+      });
+
+    return prefixMatch?.key || null;
+  };
+
+  const activeKey = getActiveKey(activePath) || activePath as MenuKey;
 
   const toggleOpen = (key: string) => {
     setOpenKeys((prev) => {
@@ -342,7 +367,7 @@ export function Sidebar({
 
   const handleMenuClick = useCallback(
     (key: MenuKey) => {
-      // navigate(key);
+      navigate(key);
       onMobileClose?.();
     },
     [navigate, onMobileClose],
@@ -353,13 +378,13 @@ export function Sidebar({
     const keys = new Set<string>();
     MEMU_CONFIG.forEach((section) => {
       section.items.forEach((item) => {
-        if (isDescendantActive(item, location.pathname)) {
+        if (isDescendantActive(item, activePath)) {
           keys.add(item.key);
         }
       });
     });
     setOpenKeys(keys);
-  }, [location.pathname]);
+  }, [activePath]);
 
   // 检查菜单项或其子项是否激活
   const isDescendantActive = (item: MenuItem, currentPath: string): boolean => {
