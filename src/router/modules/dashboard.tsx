@@ -7,6 +7,6 @@ export const dashboardRoute: RouteObject = {
     Component: (await import("@/pages/dashboard")).default,
   }),
   handle: {
-    title: "Dashboard",
+    title: "收益仪表盘",
   },
 };

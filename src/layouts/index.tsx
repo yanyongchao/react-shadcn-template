@@ -28,7 +28,7 @@ export default function DashboardPage() {
           title={currentTitle}
           onMobileMenuOpen={() => setMobileMenuOpen(true)}
         />
-        <main className="flex-1 overflow-y-auto bg-muted/30 p-4">
+        <main className="flex-1 overflow-y-auto p-4">
           <Outlet />
         </main>
       </div>

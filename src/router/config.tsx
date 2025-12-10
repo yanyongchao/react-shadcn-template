@@ -20,7 +20,7 @@ export const MEMU_CONFIG: { title?: string; items: MenuItem[] }[] = [
     items: [
       {
         key: ROUTE_PATHS.dashboard,
-        title: "Dashboard",
+        title: "收益仪表盘",
         icon: LayoutGrid,
       },
     ],
