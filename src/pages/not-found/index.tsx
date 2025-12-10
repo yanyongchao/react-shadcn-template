@@ -1,5 +1,5 @@
 
-export default function LandingPage() {
+export default function DashboardPage() {
   return (
     <>
       <div>404</div>

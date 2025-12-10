@@ -2,39 +2,19 @@ import type React from "react"
 
 import { useState } from "react"
 import {
-  LayoutGrid,
-  FileEdit,
-  Bookmark,
-  Tag,
-  Users,
-  Settings,
   LogOut,
   ChevronDown,
   ChevronRight,
   Box,
-  FolderOpen,
-  File,
-  ImageIcon,
-  Video,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { MEMU_CONFIG } from "@/router/config"
+import type { MenuKey } from "@/router/config"
 
-export type MenuKey =
-  | "dashboard"
-  | "posts"
-  | "posts-new"
-  | "posts-drafts"
-  | "posts-media"
-  | "posts-media-images"
-  | "posts-media-videos"
-  | "categories"
-  | "tags"
-  | "users"
-  | "account"
 
 interface MenuItem {
   key: MenuKey
@@ -42,67 +22,6 @@ interface MenuItem {
   icon?: React.ComponentType<{ className?: string }>
   children?: MenuItem[]
 }
-
-const menuConfig: { title?: string; items: MenuItem[] }[] = [
-  {
-    items: [
-      {
-        key: "dashboard",
-        title: "Dashboard",
-        icon: LayoutGrid,
-      },
-    ],
-  },
-  {
-    title: "Contents",
-    items: [
-      {
-        key: "posts",
-        title: "Posts",
-        icon: FileEdit,
-        children: [
-          { key: "posts", title: "All Posts", icon: File },
-          { key: "posts-new", title: "Add New", icon: FileEdit },
-          { key: "posts-drafts", title: "Drafts", icon: FolderOpen },
-          {
-            key: "posts-media",
-            title: "Media",
-            icon: FolderOpen,
-            children: [
-              { key: "posts-media-images", title: "Images", icon: ImageIcon },
-              { key: "posts-media-videos", title: "Videos", icon: Video },
-            ],
-          },
-        ],
-      },
-      {
-        key: "categories",
-        title: "Categories",
-        icon: Bookmark,
-      },
-      {
-        key: "tags",
-        title: "Tags",
-        icon: Tag,
-      },
-    ],
-  },
-  {
-    title: "Settings",
-    items: [
-      {
-        key: "users",
-        title: "Users",
-        icon: Users,
-      },
-      {
-        key: "account",
-        title: "Account",
-        icon: Settings,
-      },
-    ],
-  },
-]
 
 interface SidebarProps {
   collapsed: boolean
@@ -410,7 +329,7 @@ export function Sidebar({ collapsed, activeKey, onMenuClick, mobileOpen, onMobil
           {/* 仅在PC端收起时显示图标模式 */}
           <div className={cn("hidden", collapsed && "md:block")}>
             <div className="flex flex-col items-center gap-2">
-              {menuConfig.map((section) =>
+              {MEMU_CONFIG.map((section) =>
                 section.items.map((item) => (
                   <CollapsedMenuItem key={item.key} item={item} activeKey={activeKey} onMenuClick={handleMenuClick} />
                 )),
@@ -420,7 +339,7 @@ export function Sidebar({ collapsed, activeKey, onMenuClick, mobileOpen, onMobil
 
           {/* PC端展开或移动端时显示完整菜单 */}
           <div className={cn(collapsed && "md:hidden")}>
-            {menuConfig.map((section, sectionIndex) => (
+            {MEMU_CONFIG.map((section, sectionIndex) => (
               <div key={sectionIndex} className={sectionIndex > 0 ? "mt-6" : ""}>
                 {section.title && (
                   <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">

@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate, type RouteObject } from "react-router-dom";
 import { ROUTE_PATHS } from "@/constants/common";
-import { landingRoute } from "./modules/landing";
+import { dashboardRoute } from "./modules/dashboard";
 
 const routes: RouteObject[] = [
   {
@@ -17,9 +17,9 @@ const routes: RouteObject[] = [
     children: [
       {
         index: true,
-        element: <Navigate replace to={ROUTE_PATHS.landing} />,
+        element: <Navigate replace to={ROUTE_PATHS.dashboard} />,
       },
-      landingRoute
+      dashboardRoute
     ],
   },
   {

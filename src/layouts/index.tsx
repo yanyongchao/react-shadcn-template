@@ -1,12 +1,13 @@
 import { useState } from "react"
-import { Sidebar, type MenuKey } from "./components/sidebar"
+import { Sidebar } from "./components/sidebar"
 import { Header } from "./components/header"
 import { useSettingsStore } from "@/stores/modules/settings"
 import { Outlet } from "react-router-dom";
+import type { MenuKey } from "@/router/config"
 
 export default function DashboardPage() {
   const { collapsed } = useSettingsStore()
-  const [activeKey, setActiveKey] = useState<MenuKey>("posts-media-images")
+  const [activeKey, setActiveKey] = useState<MenuKey>("/dashboard")
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
