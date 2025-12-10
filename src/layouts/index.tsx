@@ -1,55 +1,44 @@
-import { AppSidebar } from '@/layouts/components/app-sidebar'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb'
-import { Separator } from '@/components/ui/separator'
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar'
-import { AppHelmet } from "@/components/helmet";
+"use client"
+
+import { useState } from "react"
+import { Sidebar, type MenuKey } from "./components/sidebar"
+import { Header } from "./components/header"
 import { Outlet } from "react-router-dom";
 
-export default function MainLayout() {
+export default function DashboardPage() {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [activeKey, setActiveKey] = useState<MenuKey>("dashboard")
+  const [hoverOpen, setHoverOpen] = useState(false)
+  const [disableSidebar, setDisableSidebar] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const handleDisableSidebarChange = (value: boolean) => {
+    setDisableSidebar(value)
+    if (value) {
+      setSidebarCollapsed(true)
+    }
+  }
+
   return (
-    <>
-      <AppHelmet />
-      <SidebarProvider>
-        <AppSidebar />
-        <SidebarInset className="h-svh overflow-hidden">
-          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
-            <div className="flex items-center gap-2 px-4">
-              <SidebarTrigger className="-ml-1" />
-              <Separator
-                orientation="vertical"
-                className="mr-2 data-[orientation=vertical]:h-4"
-              />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">
-                      Building Your Application
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
-            </div>
-          </header>
-          <div className="flex-1 overflow-y-auto">
-            <Outlet />
-          </div>
-        </SidebarInset>
-      </SidebarProvider>
-    </>
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar
+        collapsed={disableSidebar ? true : sidebarCollapsed}
+        activeKey={activeKey}
+        onMenuClick={setActiveKey}
+        mobileOpen={mobileMenuOpen}
+        onMobileClose={() => setMobileMenuOpen(false)}
+      />
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <Header
+          title={"xxx"}
+          sidebarCollapsed={disableSidebar ? true : sidebarCollapsed}
+          onToggleSidebar={() => !disableSidebar && setSidebarCollapsed(!sidebarCollapsed)}
+          onMobileMenuOpen={() => setMobileMenuOpen(true)}
+        />
+        <main className="flex-1 overflow-y-auto bg-muted/30 p-6">
+          <Outlet />
+        </main>
+      </div>
+    </div>
   )
 }
