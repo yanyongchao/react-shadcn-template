@@ -22,7 +22,14 @@ export function useRequest<T>(
   requestFn: () => Promise<T>,
   options: UseRequestOptions<T> = {},
 ): RequestResult<T> {
-  const { manual = false, pollingInterval, debounceInterval, throttleInterval, onSuccess, onError } = options;
+  const {
+    manual = false,
+    pollingInterval,
+    debounceInterval,
+    throttleInterval,
+    onSuccess,
+    onError,
+  } = options;
 
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);

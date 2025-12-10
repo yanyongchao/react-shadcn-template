@@ -11,8 +11,14 @@
  * get(obj, 'a.b.0.c', 'default'); // 1
  * get(obj, 'a.b.2.c', 'default'); // 'default'
  */
-export function get<T>(obj: any, path: string | string[] | number[], defaultValue?: T): T | undefined {
-  const paths = Array.isArray(path) ? path : path.replace(/\[(\w+)\]/g, ".$1").split(".");
+export function get<T>(
+  obj: any,
+  path: string | string[] | number[],
+  defaultValue?: T,
+): T | undefined {
+  const paths = Array.isArray(path)
+    ? path
+    : path.replace(/\[(\w+)\]/g, ".$1").split(".");
 
   for (let i = 0; i < paths.length; i++) {
     const key = paths[i];
@@ -31,7 +37,10 @@ type Primitive = null | undefined | boolean | number | string | symbol | bigint;
 
 function isPrimitive(value: any): value is Primitive {
   return (
-    value === null || typeof value !== "object" || typeof value === "symbol" || typeof value === "bigint"
+    value === null ||
+    typeof value !== "object" ||
+    typeof value === "symbol" ||
+    typeof value === "bigint"
   );
 }
 
@@ -94,7 +103,10 @@ export function deepClone<T>(value: T): T {
  * const obj = { a: 1, b: 2, c: 3 };
  * pick(obj, ['a', 'c']); // { a: 1, c: 3 }
  */
-export function pick<T extends object, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+export function pick<T extends object, K extends keyof T>(
+  obj: T,
+  keys: K[],
+): Pick<T, K> {
   return keys.reduce(
     (acc, key) => {
       acc[key] = obj[key];
@@ -113,7 +125,10 @@ export function pick<T extends object, K extends keyof T>(obj: T, keys: K[]): Pi
  * const obj = { a: 1, b: 2, c: 3 };
  * omit(obj, ['b']); // { a: 1, c: 3 }
  */
-export function omit<T extends object, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
+export function omit<T extends object, K extends keyof T>(
+  obj: T,
+  keys: K[],
+): Omit<T, K> {
   return Object.keys(obj).reduce(
     (acc, key) => {
       if (!keys.includes(key as K)) {

@@ -1,40 +1,42 @@
-import { useEffect } from "react"
-import { useSettingsStore } from "@/stores/modules/settings"
+import { useEffect } from "react";
+import { useSettingsStore } from "@/stores/modules/settings";
 
-type Theme = "dark" | "light" | "system"
+type Theme = "dark" | "light" | "system";
 
 export function useTheme() {
-  const { theme, setTheme } = useSettingsStore()
+  const { theme, setTheme } = useSettingsStore();
 
   useEffect(() => {
-    const root = window.document.documentElement
+    const root = window.document.documentElement;
 
-    root.classList.remove("light", "dark")
+    root.classList.remove("light", "dark");
 
     if (theme === "system") {
       const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
         .matches
         ? "dark"
-        : "light"
+        : "light";
 
-      root.classList.add(systemTheme)
-      return
+      root.classList.add(systemTheme);
+      return;
     }
 
-    root.classList.add(theme)
-  }, [theme])
+    root.classList.add(theme);
+  }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
-  }
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
-  const isDark = theme === "dark" || (theme === "system" &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches)
+  const isDark =
+    theme === "dark" ||
+    (theme === "system" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
 
   return {
     theme,
     setTheme,
     toggleTheme,
     isDark,
-  }
+  };
 }

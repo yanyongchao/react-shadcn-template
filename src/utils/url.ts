@@ -18,7 +18,10 @@ export function getBaseURL(url: string) {
  */
 export function getURLParameters(url: string): Record<string, string> {
   return (url.match(/([^?=&]+)(=([^&]*))/g) || []).reduce(
-    (a, v) => Object.assign(a, { [v.slice(0, v.indexOf("="))]: v.slice(v.indexOf("=") + 1) }),
+    (a, v) =>
+      Object.assign(a, {
+        [v.slice(0, v.indexOf("="))]: v.slice(v.indexOf("=") + 1),
+      }),
     {},
   );
 }

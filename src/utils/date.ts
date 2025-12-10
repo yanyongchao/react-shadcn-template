@@ -41,6 +41,9 @@ export function convertUTCToLocal(
  * @param format 格式化字符串，默认为"YYYY-MM-DD HH:mm:ss"
  * @returns 格式化后的日期字符串
  */
-export function dateFormat(date: dayjs.ConfigType, format: DateFormat = "YYYY-MM-DD HH:mm:ss") {
+export function dateFormat(
+  date: dayjs.ConfigType,
+  format: DateFormat = "YYYY-MM-DD HH:mm:ss",
+) {
   return dayjs(date).format(format);
 }

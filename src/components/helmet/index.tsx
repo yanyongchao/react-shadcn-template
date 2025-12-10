@@ -8,7 +8,8 @@ export function AppHelmet() {
   return (
     <Helmet>
       <title>
-        {(currRouter?.handle as any)?.title || "React"} | {import.meta.env.VITE_APP_TITLE_SUFFIX}
+        {(currRouter?.handle as any)?.title || "React"} |{" "}
+        {import.meta.env.VITE_APP_TITLE_SUFFIX}
       </title>
     </Helmet>
   );

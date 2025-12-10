@@ -142,7 +142,8 @@ export function isEmpty(value: any): boolean {
  * isEmail("invalid-email"); // false
  */
 export function isEmail(value: any): boolean {
-  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
+  const emailRegex =
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
   return isString(value) && emailRegex.test(value);
 }
 

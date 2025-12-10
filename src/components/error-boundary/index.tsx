@@ -12,7 +12,10 @@ type ErrorBoundaryState = {
  * ErrorBoundary 是一个组件，它可以捕获其子组件渲染过程中的错误，并渲染一个备用 UI 而不是崩溃的组件树。
  * - https://zh-hans.react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary
  */
-export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundary extends React.Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false };
@@ -36,7 +39,11 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
   render() {
     if (this.state.hasError) {
-      return this.props.fallback ? this.props.fallback : <h2>Something went wrong.</h2>;
+      return this.props.fallback ? (
+        this.props.fallback
+      ) : (
+        <h2>Something went wrong.</h2>
+      );
     }
 
     return this.props.children;

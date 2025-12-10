@@ -1,4 +1,8 @@
-import { createBrowserRouter, Navigate, type RouteObject } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  type RouteObject,
+} from "react-router-dom";
 import { ROUTE_PATHS } from "@/constants/common";
 import { dashboardRoute } from "./modules/dashboard";
 
@@ -9,7 +13,7 @@ const routes: RouteObject[] = [
       Component: (await import("@/pages/login")).default,
     }),
   },
-    {
+  {
     path: "/",
     lazy: async () => ({
       Component: (await import("@/layouts")).default,
@@ -19,7 +23,7 @@ const routes: RouteObject[] = [
         index: true,
         element: <Navigate replace to={ROUTE_PATHS.dashboard} />,
       },
-      dashboardRoute
+      dashboardRoute,
     ],
   },
   {

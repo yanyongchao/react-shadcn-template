@@ -1,21 +1,23 @@
-import { useState } from "react"
-import { Sidebar } from "./components/sidebar"
-import { Header } from "./components/header"
-import { useSettingsStore } from "@/stores/modules/settings"
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { Sidebar } from "./components/sidebar";
+import { Header } from "./components/header";
+import { useSettingsStore } from "@/stores/modules/settings";
 import { Outlet } from "react-router-dom";
-import type { MenuKey } from "@/router/config"
+import type { MenuKey } from "@/router/config";
 
 export default function DashboardPage() {
-  const { collapsed } = useSettingsStore()
-  const [activeKey, setActiveKey] = useState<MenuKey>("/dashboard")
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { collapsed } = useSettingsStore();
+  const location = useLocation();
+  const activeKey = location.pathname as MenuKey;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div className="flex h-screen overflow-hidden">
       <Sidebar
         collapsed={collapsed}
         activeKey={activeKey}
-        onMenuClick={setActiveKey}
+        onMenuClick={() => {}}
         mobileOpen={mobileMenuOpen}
         onMobileClose={() => setMobileMenuOpen(false)}
       />
@@ -29,5 +31,5 @@ export default function DashboardPage() {
         </main>
       </div>
     </div>
-  )
+  );
 }

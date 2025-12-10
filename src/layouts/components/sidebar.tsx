@@ -1,34 +1,42 @@
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
+import { useState, useCallback, useEffect } from "react";
+import { LogOut, ChevronDown, ChevronRight, Box } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
-  LogOut,
-  ChevronDown,
-  ChevronRight,
-  Box,
-} from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { MEMU_CONFIG } from "@/router/config"
-import type { MenuKey } from "@/router/config"
-
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { MEMU_CONFIG } from "@/router/config";
+import type { MenuKey } from "@/router/config";
 
 interface MenuItem {
-  key: MenuKey
-  title: string
-  icon?: React.ComponentType<{ className?: string }>
-  children?: MenuItem[]
+  key: MenuKey;
+  title: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  children?: MenuItem[];
 }
 
 interface SidebarProps {
-  collapsed: boolean
-  activeKey: MenuKey
-  onMenuClick: (key: MenuKey) => void
-  mobileOpen?: boolean
-  onMobileClose?: () => void
+  collapsed: boolean;
+  activeKey: MenuKey;
+  onMenuClick: (key: MenuKey) => void;
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
 }
 
 function CollapsedMenuItem({
@@ -36,37 +44,40 @@ function CollapsedMenuItem({
   activeKey,
   onMenuClick,
 }: {
-  item: MenuItem
-  activeKey: MenuKey
-  onMenuClick: (key: MenuKey) => void
+  item: MenuItem;
+  activeKey: MenuKey;
+  onMenuClick: (key: MenuKey) => void;
 }) {
-  const [open, setOpen] = useState(false)
-  const hasChildren = item.children && item.children.length > 0
-  const isActive = activeKey === item.key
+  const [open, setOpen] = useState(false);
+  const hasChildren = item.children && item.children.length > 0;
+  const isActive = activeKey === item.key;
 
   const isDescendantActive = (menuItem: MenuItem): boolean => {
-    if (menuItem.key === activeKey) return true
+    if (menuItem.key === activeKey) return true;
     if (menuItem.children) {
-      return menuItem.children.some((child) => isDescendantActive(child))
+      return menuItem.children.some((child) => isDescendantActive(child));
     }
-    return false
-  }
+    return false;
+  };
 
-  const hasActiveChild = item.children && isDescendantActive(item)
+  const hasActiveChild = item.children && isDescendantActive(item);
 
   const buttonClasses = cn(
     "flex h-10 w-10 items-center justify-center rounded-md transition-colors",
     isActive || hasActiveChild
       ? "bg-primary/10 text-primary"
       : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-  )
+  );
 
   // No children: simple tooltip + click
   if (!hasChildren) {
     return (
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
-          <button onClick={() => onMenuClick(item.key)} className={buttonClasses}>
+          <button
+            onClick={() => onMenuClick(item.key)}
+            className={buttonClasses}
+          >
             {item.icon && <item.icon className="h-5 w-5" />}
           </button>
         </TooltipTrigger>
@@ -74,27 +85,34 @@ function CollapsedMenuItem({
           {item.title}
         </TooltipContent>
       </Tooltip>
-    )
+    );
   }
 
   // Has children: use Popover to show nested menu
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button className={buttonClasses}>{item.icon && <item.icon className="h-5 w-5" />}</button>
+        <button className={buttonClasses}>
+          {item.icon && <item.icon className="h-5 w-5" />}
+        </button>
       </PopoverTrigger>
-      <PopoverContent side="right" align="start" sideOffset={10} className="w-48 p-1">
+      <PopoverContent
+        side="right"
+        align="start"
+        sideOffset={10}
+        className="w-48 p-1"
+      >
         <CollapsedPopoverMenu
           items={item.children!}
           activeKey={activeKey}
           onMenuClick={(key) => {
-            onMenuClick(key)
-            setOpen(false)
+            onMenuClick(key);
+            setOpen(false);
           }}
         />
       </PopoverContent>
     </Popover>
-  )
+  );
 }
 
 function CollapsedPopoverMenu({
@@ -103,10 +121,10 @@ function CollapsedPopoverMenu({
   onMenuClick,
   level = 0,
 }: {
-  items: MenuItem[]
-  activeKey: MenuKey
-  onMenuClick: (key: MenuKey) => void
-  level?: number
+  items: MenuItem[];
+  activeKey: MenuKey;
+  onMenuClick: (key: MenuKey) => void;
+  level?: number;
 }) {
   return (
     <div className="space-y-0.5">
@@ -120,7 +138,7 @@ function CollapsedPopoverMenu({
         />
       ))}
     </div>
-  )
+  );
 }
 
 function CollapsedPopoverMenuItem({
@@ -129,31 +147,31 @@ function CollapsedPopoverMenuItem({
   onMenuClick,
   level,
 }: {
-  item: MenuItem
-  activeKey: MenuKey
-  onMenuClick: (key: MenuKey) => void
-  level: number
+  item: MenuItem;
+  activeKey: MenuKey;
+  onMenuClick: (key: MenuKey) => void;
+  level: number;
 }) {
-  const [subOpen, setSubOpen] = useState(false)
-  const hasChildren = item.children && item.children.length > 0
-  const isActive = activeKey === item.key
+  const [subOpen, setSubOpen] = useState(false);
+  const hasChildren = item.children && item.children.length > 0;
+  const isActive = activeKey === item.key;
 
   const isDescendantActive = (menuItem: MenuItem): boolean => {
-    if (menuItem.key === activeKey) return true
+    if (menuItem.key === activeKey) return true;
     if (menuItem.children) {
-      return menuItem.children.some((child) => isDescendantActive(child))
+      return menuItem.children.some((child) => isDescendantActive(child));
     }
-    return false
-  }
+    return false;
+  };
 
-  const hasActiveChild = hasChildren && isDescendantActive(item)
+  const hasActiveChild = hasChildren && isDescendantActive(item);
 
   const baseClasses = cn(
     "flex w-full items-center justify-between rounded-md px-2 py-1.5 text-sm transition-colors",
     isActive || hasActiveChild
       ? "bg-primary/10 font-medium text-primary"
       : "text-muted-foreground hover:bg-secondary hover:text-foreground",
-  )
+  );
 
   if (!hasChildren) {
     return (
@@ -163,7 +181,7 @@ function CollapsedPopoverMenuItem({
           {item.title}
         </span>
       </button>
-    )
+    );
   }
 
   // Nested submenu using another Popover
@@ -178,19 +196,24 @@ function CollapsedPopoverMenuItem({
           <ChevronRight className="h-4 w-4" />
         </button>
       </PopoverTrigger>
-      <PopoverContent side="right" align="start" sideOffset={4} className="w-44 p-1">
+      <PopoverContent
+        side="right"
+        align="start"
+        sideOffset={4}
+        className="w-44 p-1"
+      >
         <CollapsedPopoverMenu
           items={item.children!}
           activeKey={activeKey}
           onMenuClick={(key) => {
-            onMenuClick(key)
-            setSubOpen(false)
+            onMenuClick(key);
+            setSubOpen(false);
           }}
           level={level + 1}
         />
       </PopoverContent>
     </Popover>
-  )
+  );
 }
 
 function MenuItemComponent({
@@ -201,29 +224,36 @@ function MenuItemComponent({
   openKeys,
   toggleOpen,
 }: {
-  item: MenuItem
-  level?: number
-  activeKey: MenuKey
-  onMenuClick: (key: MenuKey) => void
-  openKeys: Set<string>
-  toggleOpen: (key: string) => void
+  item: MenuItem;
+  level?: number;
+  activeKey: MenuKey;
+  onMenuClick: (key: MenuKey) => void;
+  openKeys: Set<string>;
+  toggleOpen: (key: string) => void;
 }) {
-  const hasChildren = item.children && item.children.length > 0
-  const isOpen = openKeys.has(item.key)
-  const isActive = activeKey === item.key
+  const hasChildren = item.children && item.children.length > 0;
+  const isOpen = openKeys.has(item.key);
+  const isActive = activeKey === item.key;
 
   // Check if any descendant is active
   const isDescendantActive = (menuItem: MenuItem): boolean => {
-    if (menuItem.key === activeKey) return true
+    if (menuItem.key === activeKey) return true;
     if (menuItem.children) {
-      return menuItem.children.some((child) => isDescendantActive(child))
+      return menuItem.children.some((child) => isDescendantActive(child));
     }
-    return false
-  }
+    return false;
+  };
 
-  const hasActiveChild = hasChildren && isDescendantActive(item)
+  const hasActiveChild = hasChildren && isDescendantActive(item);
 
-  const paddingLeft = level === 0 ? "pl-3" : level === 1 ? "pl-8" : level === 2 ? "pl-12" : "pl-16"
+  const paddingLeft =
+    level === 0
+      ? "pl-3"
+      : level === 1
+        ? "pl-8"
+        : level === 2
+          ? "pl-12"
+          : "pl-16";
 
   if (hasChildren) {
     return (
@@ -242,7 +272,12 @@ function MenuItemComponent({
               {item.icon && <item.icon className="h-5 w-5" />}
               {item.title}
             </span>
-            <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
+            <ChevronDown
+              className={cn(
+                "h-4 w-4 transition-transform",
+                isOpen && "rotate-180",
+              )}
+            />
           </button>
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-1">
@@ -259,14 +294,14 @@ function MenuItemComponent({
           ))}
         </CollapsibleContent>
       </Collapsible>
-    )
+    );
   }
 
   return (
     <button
       onClick={(e) => {
-        e.stopPropagation()
-        onMenuClick(item.key)
+        e.stopPropagation();
+        onMenuClick(item.key);
       }}
       className={cn(
         "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
@@ -279,32 +314,72 @@ function MenuItemComponent({
       {item.icon && <item.icon className="h-5 w-5" />}
       {item.title}
     </button>
-  )
+  );
 }
 
-export function Sidebar({ collapsed, activeKey, onMenuClick, mobileOpen, onMobileClose }: SidebarProps) {
-  const [openKeys, setOpenKeys] = useState<Set<string>>(new Set(["posts", "posts-media"]))
+export function Sidebar({
+  collapsed,
+  activeKey,
+  onMenuClick,
+  mobileOpen,
+  onMobileClose,
+}: SidebarProps) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [openKeys, setOpenKeys] = useState<Set<string>>(new Set());
 
   const toggleOpen = (key: string) => {
     setOpenKeys((prev) => {
-      const newSet = new Set(prev)
+      const newSet = new Set(prev);
       if (newSet.has(key)) {
-        newSet.delete(key)
+        newSet.delete(key);
       } else {
-        newSet.add(key)
+        newSet.add(key);
       }
-      return newSet
-    })
-  }
+      return newSet;
+    });
+  };
 
-  const handleMenuClick = (key: MenuKey) => {
-    onMenuClick(key)
-    onMobileClose?.()
-  }
+  const handleMenuClick = useCallback(
+    (key: MenuKey) => {
+      // navigate(key);
+      onMobileClose?.();
+    },
+    [navigate, onMobileClose],
+  );
+
+  // 自动展开当前路径相关的菜单组
+  useEffect(() => {
+    const keys = new Set<string>();
+    MEMU_CONFIG.forEach((section) => {
+      section.items.forEach((item) => {
+        if (isDescendantActive(item, location.pathname)) {
+          keys.add(item.key);
+        }
+      });
+    });
+    setOpenKeys(keys);
+  }, [location.pathname]);
+
+  // 检查菜单项或其子项是否激活
+  const isDescendantActive = (item: MenuItem, currentPath: string): boolean => {
+    if (item.key === currentPath) return true;
+    if (item.children) {
+      return item.children.some((child) =>
+        isDescendantActive(child, currentPath),
+      );
+    }
+    return false;
+  };
 
   return (
     <TooltipProvider>
-      {mobileOpen && <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={onMobileClose} />}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={onMobileClose}
+        />
+      )}
 
       <aside
         className={cn(
@@ -318,20 +393,36 @@ export function Sidebar({ collapsed, activeKey, onMenuClick, mobileOpen, onMobil
         <div
           className={cn(
             "flex h-14 items-center border-b border-border",
-            collapsed ? "md:justify-center md:px-2 justify-start px-4" : "gap-2 px-4",
+            collapsed
+              ? "md:justify-center md:px-2 justify-start px-4"
+              : "gap-2 px-4",
           )}
         >
           <Box className="h-6 w-6 shrink-0" />
-          <span className={cn("text-lg font-semibold", collapsed && "md:hidden")}>Brand</span>
+          <span
+            className={cn("text-lg font-semibold", collapsed && "md:hidden")}
+          >
+            Brand
+          </span>
         </div>
 
-        <nav className={cn("flex-1 overflow-y-auto", collapsed ? "p-4 md:p-2" : "p-4")}>
+        <nav
+          className={cn(
+            "flex-1 overflow-y-auto",
+            collapsed ? "p-4 md:p-2" : "p-4",
+          )}
+        >
           {/* 仅在PC端收起时显示图标模式 */}
           <div className={cn("hidden", collapsed && "md:block")}>
             <div className="flex flex-col items-center gap-2">
               {MEMU_CONFIG.map((section) =>
                 section.items.map((item) => (
-                  <CollapsedMenuItem key={item.key} item={item} activeKey={activeKey} onMenuClick={handleMenuClick} />
+                  <CollapsedMenuItem
+                    key={item.key}
+                    item={item}
+                    activeKey={activeKey}
+                    onMenuClick={handleMenuClick}
+                  />
                 )),
               )}
             </div>
@@ -340,7 +431,10 @@ export function Sidebar({ collapsed, activeKey, onMenuClick, mobileOpen, onMobil
           {/* PC端展开或移动端时显示完整菜单 */}
           <div className={cn(collapsed && "md:hidden")}>
             {MEMU_CONFIG.map((section, sectionIndex) => (
-              <div key={sectionIndex} className={sectionIndex > 0 ? "mt-6" : ""}>
+              <div
+                key={sectionIndex}
+                className={sectionIndex > 0 ? "mt-6" : ""}
+              >
                 {section.title && (
                   <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     {section.title}
@@ -363,12 +457,21 @@ export function Sidebar({ collapsed, activeKey, onMenuClick, mobileOpen, onMobil
           </div>
         </nav>
 
-        <div className={cn("border-t border-border", collapsed ? "p-4 md:p-2" : "p-4")}>
+        <div
+          className={cn(
+            "border-t border-border",
+            collapsed ? "p-4 md:p-2" : "p-4",
+          )}
+        >
           {/* 仅在PC端收起时显示图标按钮 */}
           <div className={cn("hidden", collapsed && "md:block")}>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
-                <Button variant="outline" size="icon" className="h-10 w-10 bg-transparent">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-10 w-10 bg-transparent"
+                >
                   <LogOut className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
@@ -379,7 +482,10 @@ export function Sidebar({ collapsed, activeKey, onMenuClick, mobileOpen, onMobil
           </div>
           {/* PC端展开或移动端时显示完整按钮 */}
           <div className={cn(collapsed && "md:hidden")}>
-            <Button variant="outline" className="w-full justify-center gap-2 bg-transparent">
+            <Button
+              variant="outline"
+              className="w-full justify-center gap-2 bg-transparent"
+            >
               <LogOut className="h-4 w-4" />
               Sign out
             </Button>
@@ -387,5 +493,5 @@ export function Sidebar({ collapsed, activeKey, onMenuClick, mobileOpen, onMobil
         </div>
       </aside>
     </TooltipProvider>
-  )
+  );
 }

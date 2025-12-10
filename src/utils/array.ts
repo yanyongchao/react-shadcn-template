@@ -60,7 +60,11 @@ export function last<T>(arr: readonly T[]): T | undefined {
  * // const result = compareValues(1, 2, "desc"); // 1
  * // const result = compareValues(1, 1, "asc"); // 0
  */
-export function compareValues(a: any, b: any, order: "asc" | "desc"): 0 | -1 | 1 {
+export function compareValues(
+  a: any,
+  b: any,
+  order: "asc" | "desc",
+): 0 | -1 | 1 {
   if (a < b) {
     return order === "asc" ? -1 : 1;
   }
