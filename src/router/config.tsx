@@ -30,6 +30,7 @@ export const MEMU_CONFIG: { title?: string; items: MenuItem[] }[] = [
 
 
 
+// 添加menu配置示例
 /**
  *  {
     title: "Contents",

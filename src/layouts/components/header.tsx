@@ -1,7 +1,16 @@
-import { PanelLeftClose, PanelLeftOpen, Moon, Sun, Menu } from "lucide-react";
+import { PanelLeftClose, PanelLeftOpen, Moon, Sun, Menu, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useSettingsStore } from "@/stores/modules/settings";
+import { useAuthStore } from "@/stores/modules/auth";
 import { useTheme } from "@/hooks/useTheme";
 
 interface HeaderProps {
@@ -12,6 +21,11 @@ interface HeaderProps {
 export function Header({ title, onMobileMenuOpen }: HeaderProps) {
   const { collapsed, toggleCollapsed } = useSettingsStore();
   const { isDark, toggleTheme } = useTheme();
+  const { user, logout } = useAuthStore();
+
+  const handleLogout = () => {
+    logout();
+  };
 
   return (
     <header className="flex h-14 items-center justify-between border-b border-border bg-background px-4">
@@ -47,9 +61,32 @@ export function Header({ title, onMobileMenuOpen }: HeaderProps) {
         >
           {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
         </Button>
-        <Avatar className="h-8 w-8">
-          <AvatarFallback className="text-xs">JD</AvatarFallback>
-        </Avatar>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="relative h-8 w-8 rounded-full hover:bg-accent flex items-center justify-center outline-none data-[state=open]:bg-accent">
+            <Avatar className="h-8 w-8">
+              <AvatarFallback className="text-xs">
+                {user?.name ? user.name.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
+              </AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="end">
+            <DropdownMenuLabel className="font-normal">
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm font-medium leading-none">
+                  {user?.name || "未登录用户"}
+                </p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {user?.email || ""}
+                </p>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout} className="text-red-600 dark:text-red-400">
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>退出登录</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
