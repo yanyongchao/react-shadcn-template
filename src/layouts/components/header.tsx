@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSettingsStore } from "@/stores/modules/settings";
 import { useAuthStore } from "@/stores/modules/auth";
-import { useTheme } from "@/hooks/useTheme";
+import { useTheme } from "@/components/theme-provider"
 
 interface HeaderProps {
   title: string;
@@ -20,7 +20,7 @@ interface HeaderProps {
 
 export function Header({ title, onMobileMenuOpen }: HeaderProps) {
   const { collapsed, toggleCollapsed } = useSettingsStore();
-  const { isDark, toggleTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const { user, logout } = useAuthStore();
 
   const handleLogout = () => {
@@ -56,10 +56,12 @@ export function Header({ title, onMobileMenuOpen }: HeaderProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={toggleTheme}
+          onClick={() =>
+            setTheme(theme === "dark" ? "light" : "dark")
+          }
           className="h-8 w-8"
         >
-          {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger className="relative h-8 w-8 rounded-full hover:bg-accent flex items-center justify-center outline-none data-[state=open]:bg-accent">
